@@ -6,8 +6,11 @@ import changeFileFormat
 from datetime import datetime
 from tqdm import tqdm
 
-year = input("Enter the year: ")
-path = f"C:\\Users\\YannickWieland\\Desktop\\Edit"
+dateAssumption = ""
+while not re.match("[0-9]{4}:[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}", dateAssumption):
+    dateAssumption = input("Enter the assumption date string like YYYY:MM:DD HH:mm:ss :\n")
+
+path = "D:\\Eigene Dateien\\Bilder\\2018"
 
 def adjust_date(exif_dict: dict) -> bool:
     keys = exif_dict["Exif"].keys()
@@ -18,10 +21,8 @@ def adjust_date(exif_dict: dict) -> bool:
     else:
         return True
 
-def add_year_to_jpeg(filePath, year):
+def add_year_to_jpeg(filePath, dateAssumption):
     # Ensure the year is a valid four-digit number
-    if not (1000 <= int(year) <= 9999):
-        raise ValueError("Invalid year format. Use a four-digit year (e.g., 2024).")
     fileName = os.path.basename(filePath)
     dateStrType = ""
 
@@ -42,7 +43,7 @@ def add_year_to_jpeg(filePath, year):
         date_str = f"{year}:{month}:{day} 00:00:00"
         dateStrType = f"\tdate: {date_str}"
     else:
-        date_str = f"{year}:01:01 00:00:00"
+        date_str = dateAssumption
         dateStrType = f"\tassumption: {date_str}"
 
     # Load existing EXIF data or create a new one
@@ -74,7 +75,7 @@ log = open("log"+datetime.now().strftime("_%Y%m%d_%H%M%S")+".txt", "a")
 log.write("Adjust date in jpg-Files\n")
 for file in tqdm(files, desc="Adjust date in jpg-Files"):
     try:
-        add_year_to_jpeg(os.path.join(path, file), year)
+        add_year_to_jpeg(os.path.join(path, file), dateAssumption)
     except InvalidImageDataError as e:
         failedFiles.append(file)
     except Exception as e:
@@ -92,22 +93,23 @@ for file in failedFiles:
     os.rename(os.path.join(path, file), os.path.join(failPath, file))
 
 # retry on converted files
-changeFileFormat.convert_files_to_jpg(failPath, log)
-failedFiles = os.listdir(failPath)
-finalFailedFiles = []
+if failedFiles:
+    changeFileFormat.convert_files_to_jpg(failPath, log)
+    failedFiles = os.listdir(failPath)
+    finalFailedFiles = []
 
-log.write("Retry adjust date in failed jpg-Files\n")
-for file in tqdm(failedFiles, desc="Retry adjust date in failed jpg-Files"):
-    try:
-        add_year_to_jpeg(os.path.join(path,'Failed', file), year)
-    except Exception:
-        log.write(f"Failed to add year to: {file}")
-        finalFailedFiles.append(file)
+    log.write("Retry adjust date in failed jpg-Files\n")
+    for file in tqdm(failedFiles, desc="Retry adjust date in failed jpg-Files"):
+        try:
+            add_year_to_jpeg(os.path.join(path,'Failed', file), dateAssumption)
+        except Exception:
+            log.write(f"Failed to add year to: {file}")
+            finalFailedFiles.append(file)
 
-finalFailPath = os.path.join(path, "Failed", "Failed")
-if finalFailedFiles:
-    os.mkdir(finalFailPath)
-for file in finalFailedFiles:
-    os.rename(os.path.join(failPath, file), os.path.join(finalFailPath, file))
+    finalFailPath = os.path.join(path, "Failed", "Failed")
+    if finalFailedFiles:
+        os.mkdir(finalFailPath)
+    for file in finalFailedFiles:
+        os.rename(os.path.join(failPath, file), os.path.join(finalFailPath, file))
 
 log.close()

@@ -4,7 +4,7 @@ import os
 from datetime import datetime
 from tqdm import tqdm
 
-path = "C:\\Users\\YannickWieland\\Desktop\\Edit"
+path = "D:\\Eigene Dateien\\Bilder\\2015"
 
 
 skipped = 0
@@ -34,7 +34,7 @@ for file in tqdm(files, desc="Renaming pictures"):
             date_str = exif_dict[306]
         elif re.match(".*[0-9]{8}_[0-9]{6}.*", file):
             match = re.match(r".*([0-9]{8}_[0-9]{6}).*", file).group(1)
-            date_str = f"{match[0:4]}:{match[4:6]}:{match[6:8]} {match[9:11]}{match[11:12]}{match[12:13]}{match[13:15]}"
+            date_str = f"{match[0:4]}:{match[4:6]}:{match[6:8]} {match[9:11]}:{match[11:13]}:{match[13:15]}"
             date_str = date_str.encode('utf-8')
 
         if date_str:
