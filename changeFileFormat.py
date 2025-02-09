@@ -1,5 +1,7 @@
 from PIL import Image
 import os
+from tqdm import tqdm
+
 
 def convert_png_to_jpg(input_path, output_path, quality=100):
     # Open the PNG image
@@ -12,10 +14,8 @@ def convert_png_to_jpg(input_path, output_path, quality=100):
 # Example usage
 def convert_files_to_jpg(path, log):
     files = os.listdir(path)
-    print("Converting files to jpg")
     log.write("Converting files to jpg\n")
-    for idx, file in enumerate(files):
-        print(f"at {idx+1} of {len(files)}")
+    for file in tqdm(files, desc="Converting files to jpg"):
         try:
             input_path = os.path.join(path, file)
             fileName = os.path.splitext(file)[0]

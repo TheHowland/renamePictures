@@ -4,6 +4,7 @@ import os
 import re
 import changeFileFormat
 from datetime import datetime
+from tqdm import tqdm
 
 year = input("Enter the year: ")
 path = f"C:\\Users\\YannickWieland\\Desktop\\Edit"
@@ -70,10 +71,8 @@ otherError = []
 
 log = open("log"+datetime.now().strftime("_%Y%m%d_%H%M%S")+".txt", "a")
 # Example usage
-print("Adjust date in jpg-Files")
 log.write("Adjust date in jpg-Files\n")
-for idx, file in enumerate(files):
-    print(f"at {idx+1} of {len(files)}")
+for file in tqdm(files, desc="Adjust date in jpg-Files"):
     try:
         add_year_to_jpeg(os.path.join(path, file), year)
     except InvalidImageDataError as e:
@@ -96,10 +95,9 @@ for file in failedFiles:
 changeFileFormat.convert_files_to_jpg(failPath, log)
 failedFiles = os.listdir(failPath)
 finalFailedFiles = []
-print("Retry adjust date in failed jpg-Files")
+
 log.write("Retry adjust date in failed jpg-Files\n")
-for idx, file in enumerate(failedFiles):
-    print(f"at {idx+1} of {len(failedFiles)}")
+for file in tqdm(failedFiles, desc="Retry adjust date in failed jpg-Files"):
     try:
         add_year_to_jpeg(os.path.join(path,'Failed', file), year)
     except Exception:
