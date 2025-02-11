@@ -4,14 +4,16 @@ import os
 from datetime import datetime
 from tqdm import tqdm
 
-path = "D:\\Eigene Dateien\\Bilder\\2015"
+path = "C:\\Users\\YannickWieland\\Desktop\\Edit"
 
 
 skipped = 0
 failed = 0
 renamed = 0
 
-log = open("log"+datetime.now().strftime("_%Y%m%d_%H%M%S")+".txt", "a")
+if not os.path.isdir("logs"):
+    os.mkdir("logs")
+log = open("logs\\renameToScheme_"+datetime.now().strftime("_%Y%m%d_%H%M%S")+".log", "a")
 
 files = os.listdir(path)
 for file in tqdm(files, desc="Renaming pictures"):
@@ -20,7 +22,7 @@ for file in tqdm(files, desc="Renaming pictures"):
 
     filename = os.path.splitext(file)[0]
     if re.match("IMG_[0-9]{8}_[0-9]{6}", filename):
-        log.write(f"Skipped {filename}\n")
+        log.write(f"Skipped {os.path.basename(file)}\n")
         skipped += 1
     else:
         date_str = None
@@ -47,9 +49,9 @@ for file in tqdm(files, desc="Renaming pictures"):
 
             os.rename(os.path.join(path, file), os.path.join(path, newName))
             renamed += 1
-            log.write(f"Renamed {filename} to {newName}\n")
+            log.write(f"Renamed {os.path.basename(file)} to {newName}\n")
         else:
-            log.write(f"Failed {filename}, no meta information to rename file\n")
+            log.write(f"Failed {os.path.basename(file)}, no meta information to rename file\n")
             failed += 1
 log.write(f"Renamed {renamed}; Skipped {skipped}; failed {failed}\n")
 log.close()

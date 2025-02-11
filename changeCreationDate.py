@@ -5,9 +5,9 @@ import piexif
 import re
 from datetime import datetime
 
-path = "D:\\Eigene Dateien\\Bilder\\2019"
+path = "C:\\Users\\YannickWieland\\Desktop\\Edit"
 
-log = open("log"+datetime.now().strftime("_%Y%m%d_%H%M%S")+".txt", "a")
+log = open("logs\\creationDate"+datetime.now().strftime("_%Y%m%d_%H%M%S")+".log", "a")
 files = os.listdir(path)
 for file in tqdm(files, desc="Setting creation and modifide date"):
     filePath = os.path.join(path, file)

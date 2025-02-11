@@ -16,10 +16,10 @@ def convert_files_to_jpg(path, log):
     files = os.listdir(path)
     log.write("Converting files to jpg\n")
     for file in tqdm(files, desc="Converting files to jpg"):
+        input_path = os.path.join(path, file)
+        fileName = os.path.splitext(file)[0]
+        output_path = os.path.join(path, fileName + ".jpg")
         try:
-            input_path = os.path.join(path, file)
-            fileName = os.path.splitext(file)[0]
-            output_path = os.path.join(path, fileName+".jpg")
             convert_png_to_jpg(input_path, output_path)
             if os.path.splitext(input_path)[1].lower() != os.path.splitext(output_path)[1].lower():
                 os.remove(input_path)
