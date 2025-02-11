@@ -27,14 +27,10 @@ def add_date_to_jpeg(filePath, dateAssumption) -> bool:
     dateStrType = ""
 
     # Construct EXIF date format with default month and day
-    if bool(re.match(r"IMG_[0-9]{8}_[0-9]{6}", fileName)):
-        year = fileName[4:8]
-        month = fileName[8:10]
-        day = fileName[10:12]
-        hour = fileName[13:15]
-        minute = fileName[15:17]
-        second = fileName[17:19]
-        date_str = f"{year}:{month}:{day} {hour}:{minute}:{second}"
+    if bool(re.match(".*[0-9]{8}_[0-9]{6}.*", fileName)):
+        re.match(".*[0-9]{8}_[0-9]{6}.*", fileName)
+        match = re.match(r".*([0-9]{8}_[0-9]{6}).*", file).group(1)
+        date_str = f"{match[0:4]}:{match[4:6]}:{match[6:8]} {match[9:11]}:{match[11:13]}:{match[13:15]}"
         dateStrType = f"\tdate and time: {date_str}"
     elif bool(re.match(r"IMG-[0-9]{8}-WA[0-9]{4}", fileName)):
         year = fileName[4:8]

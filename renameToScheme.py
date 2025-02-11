@@ -38,6 +38,9 @@ for file in tqdm(files, desc="Renaming pictures"):
             match = re.match(r".*([0-9]{8}_[0-9]{6}).*", file).group(1)
             date_str = f"{match[0:4]}:{match[4:6]}:{match[6:8]} {match[9:11]}:{match[11:13]}:{match[13:15]}"
             date_str = date_str.encode('utf-8')
+        elif re.match(r"IMG-[0-9]{8}-WA[0-9]{4}", file):
+            date_str = f"{file[4:8]}:{file[8:10]}:{file[10:12]} 00:00:00"
+            date_str = date_str.encode('utf-8')
 
         if date_str:
             newName = "IMG_"+date_str.decode().replace(":", "").replace(" ","_")+".jpg"
