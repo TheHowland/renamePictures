@@ -10,7 +10,7 @@ dateAssumption = ""
 while not re.match("[0-9]{4}:[0-9]{2}:[0-9]{2} [0-9]{2}:[0-9]{2}:[0-9]{2}", dateAssumption):
     dateAssumption = input("Enter the assumption date string like YYYY:MM:DD HH:mm:ss :\n")
 
-path = "C:\\Users\\YannickWieland\\Desktop\\Edit"
+path = "C:\\Users\\yanni\\Desktop\\Edit"
 
 def adjust_date(exif_dict: dict) -> bool:
     keys = exif_dict["Exif"].keys()
@@ -110,7 +110,7 @@ if failedFiles:
             adjusted = add_date_to_jpeg(os.path.join(path, 'Failed', file), dateAssumption)
             dateAdded = dateAdded + 1 if adjusted else dateAdded
         except Exception:
-            log.write(f"Failed to add year to: {file}")
+            log.write(f"Failed to add year to: {file}\n")
             finalFailedFiles.append(file)
 
     finalFailPath = os.path.join(path, "Failed", "Failed")
@@ -120,7 +120,7 @@ if failedFiles:
         os.rename(os.path.join(failPath, file), os.path.join(finalFailPath, file))
 
 log.write(f"added date to {dateAdded} files, on retry {len(failedFiles)-len(finalFailedFiles)} succeeded, {len(finalFailedFiles)} failed\n")
-log.write("Failed files:")
+log.write("Failed files:\n")
 for file in finalFailedFiles:
     log.write(f"\t{file}\n")
 log.close()
